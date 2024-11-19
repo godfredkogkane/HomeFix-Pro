@@ -1,0 +1,36 @@
+body {
+    background-color: white; /* White background */
+    color: #1e6b3a; /* Green text color */
+}
+
+h1 {
+    color: #1e6b3a;
+}
+
+.btn-success, .btn-primary, .btn-danger {
+    background-color: #1e6b3a; /* Use green for buttons */
+    border: none;
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-danger:hover {
+    background-color: #145c2b; /* Darker green on hover */
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.table th {
+    background-color: #1e6b3a; /* Green background for table headers */
+    color: white;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1; /* Light hover effect */
+}

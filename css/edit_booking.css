@@ -1,0 +1,95 @@
+/* edit_booking.css */
+
+/* Body and overall page styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e6b3a; /* Green color */
+}
+
+/* Form input styling */
+.form-label {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+.form-control {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #1e6b3a;
+    box-shadow: 0 0 0 0.2rem rgba(30, 107, 58, 0.25);
+}
+
+/* Submit button styling */
+.btn-submit {
+    background-color: #1e6b3a; /* Green */
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.btn-submit:hover {
+    background-color: #164d2b; /* Darker green */
+}
+
+/* Cancel button styling */
+.btn-cancel {
+    background-color: #ccc;
+    color: #333;
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background-color: #b3b3b3;
+}
+
+/* Footer */
+.footer {
+    background-color: #1e6b3a;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: auto;
+}

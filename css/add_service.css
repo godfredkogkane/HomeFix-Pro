@@ -1,0 +1,26 @@
+body {
+    background-color: white; /* White background */
+    color: #1e6b3a; /* Green text color */
+}
+
+h1 {
+    color: #1e6b3a;
+}
+
+.btn-success {
+    background-color: #1e6b3a; /* Green button */
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #145c2b; /* Darker green on hover */
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+label {
+    color: #1e6b3a;
+}
