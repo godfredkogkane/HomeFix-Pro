@@ -14,8 +14,8 @@ function registerUserController($fullname, $email, $password, $confirm_password,
     // Validate email format
     if (empty($email)) {
         $errors[] = "Email is required.";
-    } elseif (!preg_match("/^[a-zA-Z0-9._%+-]+@ashesi\.edu\.gh$/", $email)) {
-        $errors[] = "Invalid email format. Use your Ashesi email address.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format. Please use a valid email address.";
     }
 
     // Validate password and confirm password
@@ -33,7 +33,7 @@ function registerUserController($fullname, $email, $password, $confirm_password,
     if (empty($contact)) {
         $errors[] = "Contact number is required.";
     } elseif (!preg_match("/^\+?[1-9]\d{1,14}$/", $contact)) {
-        $errors[] = "Invalid phone number format.";
+        $errors[] = "Invalid phone number format. Include the country code.";
     }
 
     // Validate country and city

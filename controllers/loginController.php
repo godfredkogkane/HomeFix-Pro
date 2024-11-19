@@ -10,7 +10,7 @@ function loginUserController($email, $password) {
     if (empty($email)) {
         $errors[] = "Email is required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Invalid email format.";
+        $errors[] = "Invalid email format. Please provide a valid email address.";
     }
 
     // Validate password

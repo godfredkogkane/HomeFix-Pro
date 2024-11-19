@@ -1,4 +1,9 @@
 <?php
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Include the login controller
 include_once('../controllers/loginController.php');
 
@@ -13,11 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check if the result is true (login successful)
     if ($result === true) {
-        // Start the session if not already started
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        
         // Redirect based on the role_id stored in the session
         $role_id = $_SESSION['role_id'];
         
@@ -33,13 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         exit();
     } else {
-        // If errors were returned, redirect back to the form with error messages
-        $errorString = implode("&error[]=", array_map('urlencode', $result));
-        header("Location: ../view/login.php?error[]=" . $errorString);
+        // Store errors in the session for display on the login page
+        $_SESSION['error'] = $result;
+        header("Location: ../view/login.php");
         exit();
     }
 } else {
-    // If the request method is not POST, show an error
-    echo "Invalid request method.";
+    // If the request method is not POST, store an error in the session
+    $_SESSION['error'] = ["Invalid request method."];
+    header("Location: ../view/login.php");
+    exit();
 }
 ?>

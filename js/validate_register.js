@@ -1,44 +1,58 @@
-function validateRegisterForm() {
-    const fullname = document.getElementById("fullname").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    const contact = document.getElementById("contact").value;
+document.addEventListener("DOMContentLoaded", function () {
+    // Initialize intl-tel-input
+    const phoneInputField = document.getElementById("contact");
+    const phoneInputInstance = window.intlTelInput(phoneInputField, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            fetch("https://ipinfo.io?token=your_token", { headers: { Accept: "application/json" } })
+                .then((resp) => resp.json())
+                .then((resp) => callback(resp.country))
+                .catch(() => callback("US"));
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
+    });
 
-    // Patterns for validation
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@ashesi\.edu\.gh$/;
-    const contactPattern = /^\+?[1-9]\d{1,14}$/;
+    // Validation function
+    window.validateRegisterForm = function () {
+        const fullname = document.getElementById("fullname").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm_password").value;
 
-    // Validate full name
-    if (fullname.trim() === "") {
-        alert("Full name cannot be empty.");
-        return false;
-    }
+        // Patterns for validation
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    // Validate Ashesi email
-    if (!emailPattern.test(email)) {
-        alert("Email must be an Ashesi email.");
-        return false;
-    }
+        // Validate full name
+        if (fullname.trim() === "") {
+            alert("Full name cannot be empty.");
+            return false;
+        }
 
-    // Validate phone number with country code
-    if (!contactPattern.test(contact)) {
-        alert("Please provide a valid phone number including the country code (E.164 format), e.g., +1.");
-        return false;
-    }
+        // Validate email
+        if (!emailPattern.test(email)) {
+            alert("Please provide a valid email address.");
+            return false;
+        }
 
-    // Validate password length (minimum 8 characters)
-    if (password.length < 8) {
-        alert("Password must be at least 8 characters long.");
-        return false;
-    }
+        // Validate phone number
+        if (!phoneInputInstance.isValidNumber()) {
+            alert("Please provide a valid phone number.");
+            return false;
+        }
 
-    // Validate that password matches confirm password
-    if (password !== confirmPassword) {
-        alert("Passwords do not match. Please re-enter.");
-        return false;
-    }
+        // Validate password
+        if (password.length < 8) {
+            alert("Password must be at least 8 characters long.");
+            return false;
+        }
 
-    // If all validations pass, return true
-    return true;
-}
+        // Validate confirm password
+        if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return false;
+        }
+
+        // If all validations pass
+        return true;
+    };
+});

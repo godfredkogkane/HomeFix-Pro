@@ -1,7 +1,9 @@
 function validateLoginForm() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@ashesi\.edu\.gh$/;
+
+    // General email validation pattern
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     // Check if email is empty
     if (email.trim() === "") {
@@ -9,9 +11,9 @@ function validateLoginForm() {
         return false;
     }
 
-    // Validate email format (Ashesi email)
+    // Validate email format (general email)
     if (!emailPattern.test(email)) {
-        alert("Email must be an Ashesi email.");
+        alert("Invalid email format. Please enter a valid email address.");
         return false;
     }
 

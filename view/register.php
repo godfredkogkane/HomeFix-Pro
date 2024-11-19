@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +8,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Link to the external CSS file -->
+    <!-- Link to intl-tel-input CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+    <!-- Link to custom CSS -->
     <link rel="stylesheet" href="../css/register.css">
+    <style>
+        /* Custom styling for messages */
+        .message-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1050;
+            text-align: center;
+        }
+        .alert {
+            display: inline-block;
+            margin: 15px auto;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -36,15 +59,35 @@
         </div>
     </nav>
 
+    <!-- Message Display Section -->
+    <div class="message-container">
+        <?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <ul>
+                    <?php foreach ($_SESSION['error'] as $error): ?>
+                        <li><?php echo htmlspecialchars($error); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php unset($_SESSION['error']); // Clear errors after displaying ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['success']) && !empty($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?php echo htmlspecialchars($_SESSION['success']); ?>
+            </div>
+            <?php unset($_SESSION['success']); // Clear success message after displaying ?>
+        <?php endif; ?>
+    </div>
+
     <!-- Registration Form Container -->
-    <div class="form-container">
+    <div class="form-container mt-5 pt-5">
         <h2>Create Account</h2>
         <form id="registerForm" action="../actions/registerAction.php" method="POST" onsubmit="return validateRegisterForm();">
             
             <!-- Full Name -->
             <div class="mb-3">
                 <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Full Name" required>
-                <span class="error" id="fullnameError">Can't be blank.</span>
             </div>
 
             <!-- Email -->
@@ -54,8 +97,8 @@
 
             <!-- Phone Number -->
             <div class="mb-3">
-                <input type="text" class="form-control" id="contact" name="contact" placeholder="Phone Number (with country code)" required>
-                <span class="error" id="contactError">Please include the country code (e.g., +1).</span>
+                <input type="tel" class="form-control" id="contact" name="contact" placeholder="Enter phone number" required>
+                <small class="text-muted">Start your number without the leading zero. Example: 701234567.</small>
             </div>
 
             <!-- Country -->
@@ -90,7 +133,6 @@
             <!-- Confirm Password -->
             <div class="mb-3">
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
-                <span class="error" id="confirmPasswordError">Passwords do not match.</span>
             </div>
 
             <!-- Register Button -->
@@ -107,7 +149,9 @@
         <p>&copy; 2024 HomeFix Pro. All Rights Reserved.</p>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
     <script src="../js/validate_register.js"></script>
 </body>
 </html>
