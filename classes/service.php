@@ -41,12 +41,18 @@ class Service extends db_connection {
             mysqli_stmt_close($stmt);
             return $services;
         } else {
+            error_log("Database Error: " . mysqli_error($this->db));
             return false; // Error preparing the statement
         }
     }
 
-    // Other CRUD methods as previously defined (addService, editService, deleteService, etc.)
+    // Method to add a new service
     public function addService($service_name, $category_id, $provider_id, $description, $cost, $duration) {
+        // Ensure provider exists
+        if (!$this->validateProvider($provider_id)) {
+            return false;
+        }
+
         $sql = "INSERT INTO services (service_name, category_id, provider_id, service_description, service_cost, service_duration) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         
@@ -56,15 +62,23 @@ class Service extends db_connection {
                 mysqli_stmt_close($stmt);
                 return true;
             } else {
+                error_log("Database Error: " . mysqli_error($this->db));
                 mysqli_stmt_close($stmt);
                 return false;
             }
         } else {
+            error_log("Database Error: " . mysqli_error($this->db));
             return false;
         }
     }
 
+    // Method to edit a service
     public function editService($service_id, $service_name, $category_id, $provider_id, $description, $cost, $duration) {
+        // Ensure provider exists
+        if (!$this->validateProvider($provider_id)) {
+            return false;
+        }
+
         $sql = "UPDATE services 
                 SET service_name = ?, category_id = ?, provider_id = ?, service_description = ?, service_cost = ?, service_duration = ? 
                 WHERE service_id = ?";
@@ -75,14 +89,17 @@ class Service extends db_connection {
                 mysqli_stmt_close($stmt);
                 return true;
             } else {
+                error_log("Database Error: " . mysqli_error($this->db));
                 mysqli_stmt_close($stmt);
                 return false;
             }
         } else {
+            error_log("Database Error: " . mysqli_error($this->db));
             return false;
         }
     }
 
+    // Method to delete a service
     public function deleteService($service_id) {
         $sql = "DELETE FROM services WHERE service_id = ?";
         
@@ -92,14 +109,17 @@ class Service extends db_connection {
                 mysqli_stmt_close($stmt);
                 return true;
             } else {
+                error_log("Database Error: " . mysqli_error($this->db));
                 mysqli_stmt_close($stmt);
                 return false;
             }
         } else {
+            error_log("Database Error: " . mysqli_error($this->db));
             return false;
         }
     }
 
+    // Method to get a service by ID
     public function getServiceById($service_id) {
         $sql = "SELECT s.service_id, s.service_name, s.category_id, s.provider_id, 
                        s.service_description, s.service_cost, s.service_duration,
@@ -118,8 +138,20 @@ class Service extends db_connection {
             mysqli_stmt_close($stmt);
             return $service;
         } else {
+            error_log("Database Error: " . mysqli_error($this->db));
             return false;
         }
     }
+
+    // Helper method to validate provider ID
+    public function validateProvider($provider_id) {
+        $sql = "SELECT provider_id FROM service_providers WHERE provider_id = ?";
+        $stmt = mysqli_prepare($this->db, $sql);
+        mysqli_stmt_bind_param($stmt, 'i', $provider_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+        $isValid = mysqli_stmt_num_rows($stmt) > 0;
+        mysqli_stmt_close($stmt);
+        return $isValid;
+    }
 }
-?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('../classes/single_service.php');
+include_once('../classes/service.php');
 
 // Ensure the user is logged in
 if (!isset($_SESSION['user_id'])) {

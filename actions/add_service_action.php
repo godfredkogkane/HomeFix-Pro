@@ -1,32 +1,35 @@
 <?php
-// Check if the form was submitted via POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Include necessary files
-    include_once('../settings/db_class.php');
-    include_once('../controllers/service_controller.php');
+session_start();
 
-    // Retrieve and sanitize form data
-    $service_name = trim($_POST['service_name']);
-    $category_id = intval($_POST['category_id']);
-    $provider_id = intval($_POST['provider_id']);
-    $description = trim($_POST['description']);
-    $cost = floatval($_POST['service_cost']);
-    $duration = intval($_POST['service_duration']); // Duration in minutes
+// Include necessary files
+require_once '../controllers/services_controller.php';
 
-    // Call the controller to handle the logic
-    $result = addServiceController($service_name, $category_id, $provider_id, $description, $cost, $duration);
+// Validate and sanitize input
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $service_name = filter_input(INPUT_POST, 'service_name', FILTER_SANITIZE_STRING);
+    $category_id = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT);
+    $provider_id = filter_input(INPUT_POST, 'provider_id', FILTER_VALIDATE_INT);
+    $description = filter_input(INPUT_POST, 'service_description', FILTER_SANITIZE_STRING);
+    $cost = filter_input(INPUT_POST, 'service_cost', FILTER_VALIDATE_FLOAT);
+    $duration = filter_input(INPUT_POST, 'service_duration', FILTER_VALIDATE_INT);
 
-    // Redirect based on the result
-    if ($result) {
-        header('Location: ../admin/manage_services.php?success=Service added successfully');
-        exit();
+    // Check for any missing or invalid input
+    if ($service_name && $category_id && $provider_id && $description && $cost && $duration) {
+        $result = addServiceController($service_name, $category_id, $provider_id, $description, $cost, $duration);
+
+        if ($result) {
+            $_SESSION['success'] = "Service added successfully!";
+            header('Location: ../admin/manage_services.php');
+            exit();
+        } else {
+            $_SESSION['error'] = "Failed to add the service. Please try again.";
+        }
     } else {
-        header('Location: ../admin/add_service.php?error=Failed to add service');
-        exit();
+        $_SESSION['error'] = "Invalid input. Please check all fields.";
     }
 } else {
-    // Redirect if the request method is not POST
-    header('Location: ../admin/add_service.php');
-    exit();
+    $_SESSION['error'] = "Invalid request method.";
 }
-?>
+
+header('Location: ../view/add_service.php');
+exit();

@@ -1,26 +1,9 @@
-<?php
-session_start();
-include_once('../settings/db_class.php');
-include_once('../classes/service_category.php');
-
-// Ensure the user is an admin
-// Uncomment the code below if user authentication is implemented
-// if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 3) {
-//     header('Location: ../view/login.php');
-//     exit();
-// }
-
-// Initialize the Service class
-$service = new ServiceCategory();
-$services = $service->getAllServiceCategories();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Manage Service Categories</title>
+    <title>Admin - Manage Services</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -108,35 +91,39 @@ $services = $service->getAllServiceCategories();
             vertical-align: middle;
         }
 
+        .btn-action {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+
         .btn-add {
             background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            display: inline-block;
             margin-bottom: 20px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
         }
 
         .btn-add:hover {
             background-color: #218838;
         }
 
-        .btn-primary {
-            background-color: #ffc107;
-            color: black;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+        .btn-edit:hover {
+            background-color: #e0a800;
         }
 
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+        .btn-delete:hover {
+            background-color: #c82333;
         }
 
         @media (max-width: 768px) {
@@ -168,14 +155,14 @@ $services = $service->getAllServiceCategories();
     <a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
     <a href="manage_users.php"><i class="fas fa-users"></i> Manage Users</a>
     <a href="manage_bookings.php"><i class="fas fa-calendar-alt"></i> Manage Bookings</a>
-    <a href="manage_services.php"><i class="fas fa-cogs"></i> Manage Services</a>
-    <a href="manage_service_categories.php" class="active"><i class="fas fa-list"></i> Manage Categories</a>
+    <a href="manage_services.php" class="active"><i class="fas fa-cogs"></i> Manage Services</a>
+    <a href="manage_service_categories.php"><i class="fas fa-list"></i> Manage Categories</a>
     <a href="../view/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </nav>
 
 <!-- Main Content -->
 <main class="main-content">
-    <h1>Manage Service Categories</h1>
+    <h1>Manage Services</h1>
 
     <!-- Success/Error Messages -->
     <?php if (isset($_GET['success'])): ?>
@@ -190,44 +177,42 @@ $services = $service->getAllServiceCategories();
         </div>
     <?php endif; ?>
 
-    <!-- Add New Service Button -->
-    <a href="add_service_category.php" class="btn-add"><i class="fas fa-plus"></i> Add New Service Category</a>
+    <!-- Add Service Button -->
+    <a href="add_service.php" class="btn btn-add"><i class="fas fa-plus"></i> Add New Service</a>
 
     <!-- Services Table -->
     <div class="table-container">
-        <table class="table table-bordered table-hover">
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Service ID</th>
-                    <th>Service Category</th>
-                    <th>Description</th>
-                    <th>Image</th>
+                    <th>ID</th>
+                    <th>Service Name</th>
+                    <th>Category</th>
+                    <th>Provider</th>
+                    <th>Cost</th>
+                    <th>Duration (Minutes)</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (count($services) > 0): ?>
+                <?php if (!empty($services)): ?>
                     <?php foreach ($services as $service): ?>
                         <tr>
-                            <td><?= htmlspecialchars($service['category_id']); ?></td>
+                            <td><?= htmlspecialchars($service['service_id']); ?></td>
+                            <td><?= htmlspecialchars($service['service_name']); ?></td>
                             <td><?= htmlspecialchars($service['category_name']); ?></td>
-                            <td><?= htmlspecialchars($service['description']); ?></td>
+                            <td><?= htmlspecialchars($service['provider_name'] ?? 'N/A'); ?></td>
+                            <td><?= number_format($service['service_cost'], 2); ?></td>
+                            <td><?= htmlspecialchars($service['service_duration']); ?></td>
                             <td>
-                                <?php if (!empty($service['image'])): ?>
-                                    <img src="<?= htmlspecialchars($service['image']); ?>" alt="Service Image" width="50">
-                                <?php else: ?>
-                                    <span>No Image</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <a href="edit_service_category.php?id=<?= htmlspecialchars($service['category_id']); ?>" class="btn btn-primary">Edit</a>
-                                <a href="../actions/deleteServiceAction.php?id=<?= htmlspecialchars($service['category_id']); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a>
+                                <a href="../actions/edit_service_action.php?id=<?= $service['service_id']; ?>" class="btn-action btn-edit">Edit</a>
+                                <a href="../actions/deleteServiceAction.php?id=<?= $service['service_id']; ?>" class="btn-action btn-delete" onclick="return confirm('Are you sure you want to delete this service?')">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="5" class="text-center">No service categories found.</td>
+                        <td colspan="7" class="text-center">No services found.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
